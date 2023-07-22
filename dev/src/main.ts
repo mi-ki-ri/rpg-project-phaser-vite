@@ -77,16 +77,15 @@ class BattleScene extends Phaser.Scene {
         this.phase = "WT_ROUND";
         break;
       case "WT_ROUND":
-        const charactor = this.charactors
-          .filter((charactor) => {
-            return !charactor.isDead;
-          })
-          .shift();
-        if (charactor) {
+        const charactor = this.charactors.shift();
+
+        if (charactor && charactor.isDead) break;
+
+        if (charactor && !charactor.isDead) {
           charactor.skills.find((skill) => {
             if (skill.mp <= charactor.mp) {
               const target = this.charactors.find((target) => {
-                return target !== charactor;
+                return target !== charactor && !target.isDead;
               });
               if (target && !target.isDead) {
                 skill.effect(charactor, target);
