@@ -82,35 +82,39 @@ class BattleScene extends Phaser.Scene {
         if (charactor && charactor.isDead) break;
 
         if (charactor && !charactor.isDead) {
-          charactor.skills.find((skill) => {
-            if (skill.mp <= charactor.mp) {
-              const target = this.charactors.find((target) => {
-                return target !== charactor && !target.isDead;
-              });
-              if (target && !target.isDead) {
-                skill.effect(charactor, target);
-              }
-              const msgTxt = this.add.text(
-                0,
-                0,
-                `${charactor.name}の${skill.name}`
-              );
-              msgTxt.x = 400 - msgTxt.width / 2;
-              msgTxt.y = 300 - msgTxt.height / 2;
-              msgTxt.setInteractive();
-              msgTxt.on("pointerdown", () => {
-                if (this.charactors.length === 0) {
-                  this.phase = "WT_START";
-                } else {
-                  this.phase = "WT_ROUND";
+          charactor.skills
+            .sort(() => {
+              return Math.random() - 0.5;
+            })
+            .find((skill) => {
+              if (skill.mp <= charactor.mp) {
+                const target = this.charactors.find((target) => {
+                  return target !== charactor && !target.isDead;
+                });
+                if (target && !target.isDead) {
+                  skill.effect(charactor, target);
                 }
-                this.isWaiting = false;
-                msgTxt.destroy();
-              });
-              this.isWaiting = true;
-              return true;
-            }
-          });
+                const msgTxt = this.add.text(
+                  0,
+                  0,
+                  `${charactor.name}の${skill.name}`
+                );
+                msgTxt.x = 400 - msgTxt.width / 2;
+                msgTxt.y = 300 - msgTxt.height / 2;
+                msgTxt.setInteractive();
+                msgTxt.on("pointerdown", () => {
+                  if (this.charactors.length === 0) {
+                    this.phase = "WT_START";
+                  } else {
+                    this.phase = "WT_ROUND";
+                  }
+                  this.isWaiting = false;
+                  msgTxt.destroy();
+                });
+                this.isWaiting = true;
+                return true;
+              }
+            });
         }
     }
   }
